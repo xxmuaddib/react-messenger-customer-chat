@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 const removeElementByIds = ids => {
   ids.forEach(id => {
@@ -21,7 +21,7 @@ export default class MessengerCustomerChat extends Component {
     themeColor: PropTypes.string,
     loggedInGreeting: PropTypes.string,
     loggedOutGreeting: PropTypes.string,
-    greetingDialogDisplay: PropTypes.oneOf(['show', 'hide', 'fade']),
+    greetingDialogDisplay: PropTypes.oneOf(["show", "hide", "fade"]),
     greetingDialogDelay: PropTypes.number,
     autoLogAppEvents: PropTypes.bool,
     xfbml: PropTypes.bool,
@@ -29,6 +29,7 @@ export default class MessengerCustomerChat extends Component {
     language: PropTypes.string,
     onCustomerChatDialogShow: PropTypes.func,
     onCustomerChatDialogHide: PropTypes.func,
+    onFbLoad: PropTypes.func
   };
 
   static defaultProps = {
@@ -42,15 +43,16 @@ export default class MessengerCustomerChat extends Component {
     greetingDialogDelay: undefined,
     autoLogAppEvents: true,
     xfbml: true,
-    version: '2.11',
-    language: 'en_US',
+    version: "2.11",
+    language: "en_US",
     onCustomerChatDialogShow: undefined,
     onCustomerChatDialogHide: undefined,
+    onFbLoad: undefined
   };
 
   state = {
     fbLoaded: false,
-    shouldShowDialog: undefined,
+    shouldShowDialog: undefined
   };
 
   componentDidMount() {
@@ -88,10 +90,14 @@ export default class MessengerCustomerChat extends Component {
         appId,
         autoLogAppEvents,
         xfbml,
-        version: `v${version}`,
+        version: `v${version}`
       });
 
-      this.setState({ fbLoaded: true });
+      this.setState({ fbLoaded: true }, () => {
+        if (onFbLoad) {
+          onFbLoad();
+        }
+      });
     };
   }
 
@@ -108,12 +114,12 @@ export default class MessengerCustomerChat extends Component {
       js.id = id;
       js.src = `https://connect.facebook.net/${language}/sdk/xfbml.customerchat.js`;
       fjs.parentNode.insertBefore(js, fjs);
-    })(document, 'script', 'facebook-jssdk');
+    })(document, "script", "facebook-jssdk");
     /* eslint-enable */
   }
 
   removeFacebookSDK() {
-    removeElementByIds(['facebook-jssdk', 'fb-root']);
+    removeElementByIds(["facebook-jssdk", "fb-root"]);
 
     delete window.FB;
   }
@@ -138,14 +144,14 @@ export default class MessengerCustomerChat extends Component {
 
     if (onCustomerChatDialogShow) {
       window.FB.Event.subscribe(
-        'customerchat.dialogShow',
+        "customerchat.dialogShow",
         onCustomerChatDialogShow
       );
     }
 
     if (onCustomerChatDialogHide) {
       window.FB.Event.subscribe(
-        'customerchat.dialogHide',
+        "customerchat.dialogHide",
         onCustomerChatDialogHide
       );
     }
@@ -160,30 +166,30 @@ export default class MessengerCustomerChat extends Component {
       loggedInGreeting,
       loggedOutGreeting,
       greetingDialogDisplay,
-      greetingDialogDelay,
+      greetingDialogDelay
     } = this.props;
 
-    const refAttribute = htmlRef !== undefined ? `ref="${htmlRef}"` : '';
+    const refAttribute = htmlRef !== undefined ? `ref="${htmlRef}"` : "";
     const minimizedAttribute =
-      minimized !== undefined ? `minimized="${minimized}"` : '';
+      minimized !== undefined ? `minimized="${minimized}"` : "";
     const themeColorAttribute =
-      themeColor !== undefined ? `theme_color="${themeColor}"` : '';
+      themeColor !== undefined ? `theme_color="${themeColor}"` : "";
     const loggedInGreetingAttribute =
       loggedInGreeting !== undefined
         ? `logged_in_greeting="${loggedInGreeting}"`
-        : '';
+        : "";
     const loggedOutGreetingAttribute =
       loggedOutGreeting !== undefined
         ? `logged_out_greeting="${loggedOutGreeting}"`
-        : '';
+        : "";
     const greetingDialogDisplayAttribute =
       greetingDialogDisplay !== undefined
         ? `greeting_dialog_display="${greetingDialogDisplay}"`
-        : '';
+        : "";
     const greetingDialogDelayAttribute =
       greetingDialogDelay !== undefined
         ? `greeting_dialog_delay="${greetingDialogDelay}"`
-        : '';
+        : "";
 
     return {
       __html: `<div
@@ -196,7 +202,7 @@ export default class MessengerCustomerChat extends Component {
         ${loggedOutGreetingAttribute}
         ${greetingDialogDisplayAttribute}
         ${greetingDialogDelayAttribute}
-      ></div>`,
+      ></div>`
     };
   }
 
@@ -205,10 +211,10 @@ export default class MessengerCustomerChat extends Component {
 
     if (fbLoaded && shouldShowDialog !== this.props.shouldShowDialog) {
       document.addEventListener(
-        'DOMNodeInserted',
+        "DOMNodeInserted",
         event => {
           const element = event.target;
-          if (element.className.includes('fb_dialog')) {
+          if (element.className.includes("fb_dialog")) {
             this.controlPlugin();
           }
         },
