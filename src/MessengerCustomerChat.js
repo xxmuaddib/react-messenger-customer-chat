@@ -83,7 +83,7 @@ export default class MessengerCustomerChat extends Component {
   }
 
   setFbAsyncInit() {
-    const { appId, autoLogAppEvents, xfbml, version } = this.props;
+    const { appId, autoLogAppEvents, xfbml, version, onFbLoad } = this.props;
 
     window.fbAsyncInit = () => {
       window.FB.init({
