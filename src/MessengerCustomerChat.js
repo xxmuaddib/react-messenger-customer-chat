@@ -28,6 +28,7 @@ export default class MessengerCustomerChat extends Component {
     language: PropTypes.string,
     onCustomerChatDialogShow: PropTypes.func,
     onCustomerChatDialogHide: PropTypes.func,
+    onFbLoad: PropTypes.func,
   };
 
   static defaultProps = {
@@ -46,6 +47,7 @@ export default class MessengerCustomerChat extends Component {
     language: 'en_US',
     onCustomerChatDialogShow: undefined,
     onCustomerChatDialogHide: undefined,
+    onFbLoad: undefined,
   };
 
   state = {
@@ -87,7 +89,7 @@ export default class MessengerCustomerChat extends Component {
   }
 
   setFbAsyncInit() {
-    const { appId, autoLogAppEvents, xfbml, version } = this.props;
+    const { appId, autoLogAppEvents, xfbml, version, onFbLoad } = this.props;
 
     window.fbAsyncInit = () => {
       window.FB.init({
@@ -97,14 +99,18 @@ export default class MessengerCustomerChat extends Component {
         version: `v${version}`,
       });
 
-      this.setState({ fbLoaded: true });
+      this.setState({ fbLoaded: true }, () => {
+        if (onFbLoad) {
+          onFbLoad();
+        }
+      });
     };
   }
 
   loadSDKAsynchronously() {
     const { language } = this.props;
     /* eslint-disable */
-    (function(d, s, id) {
+    (function (d, s, id) {
       var js,
         fjs = d.getElementsByTagName(s)[0];
       if (d.getElementById(id)) {
@@ -114,7 +120,7 @@ export default class MessengerCustomerChat extends Component {
       js.id = id;
       js.src = `https://connect.facebook.net/${language}/sdk/xfbml.customerchat.js`;
       fjs.parentNode.insertBefore(js, fjs);
-    })(document, 'script', 'facebook-jssdk');
+    })(document, "script", "facebook-jssdk");
     /* eslint-enable */
   }
 
